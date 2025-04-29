@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { motion } from "motion/react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { INTRO_IMAGES } from "../lib/images";
 
 gsap.registerPlugin(useGSAP);
 
@@ -9,16 +10,6 @@ const IMG_SIZE = {
   width: 324,
   height: 400,
 };
-
-const INTRO_IMAGES = [
-  "1.webp",
-  "2.webp",
-  "3.webp",
-  "4.webp",
-  "5.webp",
-  "6.webp",
-  "main.webp",
-];
 
 function Hero() {
   const imgsContainerRef = useRef<HTMLDivElement>(null);
@@ -130,7 +121,7 @@ function Hero() {
           <img
             ref={imgRefs[index]}
             key={index}
-            src={`/src/assets/img/${img}`}
+            src={img}
             alt="Monica Bellucci"
             {...IMG_SIZE}
             className="absolute inset-0 w-full opacity-0"
