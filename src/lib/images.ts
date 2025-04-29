@@ -17,7 +17,6 @@ import img15 from "../assets/img/15.webp";
 import img16 from "../assets/img/16.webp";
 
 export const INTRO_IMAGES = [
-  mainImg,
   img1,
   img2,
   img3,
@@ -34,4 +33,5 @@ export const INTRO_IMAGES = [
   img14,
   img15,
   img16,
+  mainImg,
 ];
