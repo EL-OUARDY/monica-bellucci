@@ -3,7 +3,7 @@ import Hero from "./components/Hero";
 
 function App() {
   return (
-    <div className="page-wrapper flex min-h-screen flex-col items-center px-8 py-4">
+    <div className="page-wrapper flex min-h-screen flex-col items-center">
       <Header />
       <Hero />
     </div>

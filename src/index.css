@@ -12,6 +12,7 @@
 
 @theme inline {
   --font-sans: 'Darker Grotesque';
+  --font-title: 'Maragsa';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -23,6 +24,12 @@
   @font-face {
     font-family: 'Darker Grotesque';
     src: url('./assets/fonts/DarkerGrotesque-VariableFont.ttf') format('truetype');
+    font-weight: 100 900;
+  }
+
+  @font-face {
+    font-family: 'Maragsa';
+    src: url('./assets/fonts/Maragsa-Display.woff2') format('woff2');
     font-weight: 100 900;
   }
 
