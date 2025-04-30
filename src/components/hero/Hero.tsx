@@ -1,16 +1,12 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { INTRO_IMAGES } from "../lib/images";
 import { CustomEase } from "gsap/CustomEase";
-import Header from "./Header";
+import Header from "../Header";
+import { IMG_SIZE, INTRO_IMAGES } from "./constants";
+import { createHeroTimeline, initializeAnimations } from "./animations";
 
 gsap.registerPlugin(useGSAP, CustomEase);
-
-const IMG_SIZE = {
-  width: 324,
-  height: 400,
-};
 
 function Hero() {
   const imgsContainerRef = useRef<HTMLDivElement>(null);
@@ -34,21 +30,7 @@ function Hero() {
 
     // Create a custom ease
     CustomEase.create("myEase", "0.25,1,0.5,1");
-
-    // Initialize animation properties
-    gsap.set(imgsContainerRef.current, {
-      y: -window.innerHeight / 2 + IMG_SIZE.height / 2,
-    });
-    gsap.set(".firstname .letter", {
-      y: 140,
-    });
-    gsap.set(".lastname .letter", {
-      y: 140,
-    });
-    gsap.set(".hero-info", {
-      opacity: 0,
-      y: 30,
-    });
+    initializeAnimations(imgsContainerRef.current);
 
     let loadedCount = 0;
     const totalImages = images.length;
@@ -57,88 +39,9 @@ function Hero() {
     const checkAllLoaded = () => {
       loadedCount++;
       if (loadedCount === totalImages) {
-        // Animation sequence
-        // Create a new GSAP timeline
-        const tl = gsap.timeline({
-          defaults: {
-            duration: 0.15,
-            ease: "myEase",
-          },
-          onComplete: () => {
-            tl.pause(); // pause the animation on complete.
-            console.log("Timeline duration: " + tl.duration());
-          },
-        });
-
-        timelineRef.current = tl; // Store timeline reference
-
-        // Iterate over each image and create the animation
-        images.forEach((img, index) => {
-          tl.to(
-            img,
-            {
-              autoAlpha: 1,
-              duration: 0.15,
-              delay: 0.3,
-            },
-            index === 0 ? "+=0" : "-=0.6",
-          ); //fade in the image
-          if (index < images.length - 1) {
-            tl.to(img, {
-              autoAlpha: 0,
-              duration: 0.2,
-            }); // fade out the image, if is not the last one
-          }
-        });
-
-        // Animating imgs container
-        tl.to(imgsContainerRef.current, {
-          y: 0,
-          width: "100%",
-          height: window.innerHeight / 2,
-          duration: 1.4,
-          delay: 0.4,
-        }).to(
-          images[images.length - 1],
-          {
-            y: 0,
-            duration: 1.4,
-          },
-          "<",
-        );
-
-        // Animate Hero model name
-        // Animate first name letters, staggering from the end (reverse)
-        tl.to(
-          ".firstname .letter",
-          {
-            y: 0,
-            duration: 1,
-            stagger: { each: 0.04, from: "end" },
-          },
-          "-=1",
-        );
-
-        // Animate last name letters, normal stagger (from the start)
-        tl.to(
-          ".lastname .letter",
-          {
-            y: 0,
-            duration: 1,
-            stagger: { each: 0.04, from: "start" },
-          },
-          "<",
-        );
-
-        // Animate info hero text
-        tl.to(
-          ".hero-info",
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1.4,
-          },
-          "-=0.8",
+        timelineRef.current = createHeroTimeline(
+          imgsContainerRef.current!,
+          images as HTMLImageElement[],
         );
       }
     };
