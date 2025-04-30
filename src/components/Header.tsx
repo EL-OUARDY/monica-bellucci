@@ -5,7 +5,11 @@ import { CustomEase } from "gsap/CustomEase";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 
-function Header() {
+interface Props {
+  onLogoClick: () => void;
+}
+
+function Header({ onLogoClick }: Props) {
   useGSAP(() => {
     // Create a custom ease
     CustomEase.create("myEase", "0.25,1,0.5,1");
@@ -14,14 +18,19 @@ function Header() {
       y: 20,
       autoAlpha: 0,
       duration: 1.4,
-      delay: 3,
+      delay: 4,
       ease: "myEase",
     });
   });
 
   return (
     <header className="flex w-full items-center justify-between px-8 pt-4 lg:w-5xl">
-      <span className="font-title text-xl font-semibold">Monica Bellucci</span>
+      <span
+        onClick={() => onLogoClick()}
+        className="font-title cursor-pointer text-xl font-semibold"
+      >
+        Monica Bellucci
+      </span>
       <MenuIcon className="size-5 cursor-pointer" />
     </header>
   );

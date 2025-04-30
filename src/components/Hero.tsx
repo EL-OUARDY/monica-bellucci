@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { INTRO_IMAGES } from "../lib/images";
 import { CustomEase } from "gsap/CustomEase";
+import Header from "./Header";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 
@@ -14,7 +15,9 @@ const IMG_SIZE = {
 function Hero() {
   const imgsContainerRef = useRef<HTMLDivElement>(null);
 
-  // Array of references for each into image
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+
+  // Array of references for each image
   const imgRefs = Array(INTRO_IMAGES.length)
     .fill(null)
     .map(() =>
@@ -44,7 +47,7 @@ function Hero() {
     });
     gsap.set(".hero-info", {
       opacity: 0,
-      y: 20,
+      y: 30,
     });
 
     let loadedCount = 0;
@@ -67,19 +70,24 @@ function Hero() {
           },
         });
 
+        timelineRef.current = tl; // Store timeline reference
+
         // Iterate over each image and create the animation
         images.forEach((img, index) => {
-          tl.to(img, {
-            autoAlpha: 1,
-          }); //fade in the image
+          tl.to(
+            img,
+            {
+              autoAlpha: 1,
+              duration: 0.15,
+              delay: 0.3,
+            },
+            index === 0 ? "+=0" : "-=0.6",
+          ); //fade in the image
           if (index < images.length - 1) {
             tl.to(img, {
               autoAlpha: 0,
-              onComplete: () => {
-                // Remove the image from DOM after fade out
-                if (img) img.parentNode?.removeChild(img);
-              },
-            }); // Fade out the image, if is not the last one
+              duration: 0.2,
+            }); // fade out the image, if is not the last one
           }
         });
 
@@ -87,12 +95,13 @@ function Hero() {
         tl.to(imgsContainerRef.current, {
           y: 0,
           width: "100%",
+          height: window.innerHeight / 2,
           duration: 1.4,
           delay: 0.4,
         }).to(
           images[images.length - 1],
           {
-            y: -750,
+            y: 0,
             duration: 1.4,
           },
           "<",
@@ -146,57 +155,66 @@ function Hero() {
   });
 
   return (
-    <main className="flex size-full flex-1 flex-col items-center justify-end gap-4">
-      {/* Titles */}
-      <div className="hero-text flex w-fit flex-col overflow-hidden px-8">
-        <div className="hero-info text-muted-foreground -mb-4 flex items-center justify-between text-lg">
-          <div className="hover:underline">Model/Actress</div>
-          <div className="hover:underline">
-            <a
-              target="_blank"
-              href="https://www.instagram.com/monicabellucciofficiel"
-              className=""
-            >
-              @MonicaBellucciOfficiel
-            </a>
+    <>
+      <Header
+        onLogoClick={() => {
+          if (timelineRef.current) {
+            timelineRef.current.restart();
+          }
+        }}
+      />
+      <main className="flex size-full flex-1 flex-col items-center justify-end gap-4">
+        {/* Titles */}
+        <div className="hero-text flex w-fit flex-col overflow-hidden px-8">
+          <div className="hero-info font-title text-muted-foreground -mb-2 flex items-center justify-between text-sm sm:-mb-4 sm:text-base">
+            <div className="hover:underline">Model/Actress</div>
+            <div className="hover:underline">
+              <a
+                target="_blank"
+                href="https://www.instagram.com/monicabellucciofficiel"
+                className=""
+              >
+                @MonicaBellucciOfficiel
+              </a>
+            </div>
           </div>
+          <h2 className="font-title flex gap-6 text-center text-[2.8rem] tracking-wide sm:text-[5rem] md:text-[6rem] lg:text-[7rem]">
+            <div className="firstname">
+              {"Monica".split("").map((ch, i) => (
+                <span key={i} className="letter inline-block">
+                  {ch}
+                </span>
+              ))}
+            </div>
+            <span className="lastname">
+              {"Bellucci".split("").map((ch, i) => (
+                <span key={i} className="letter inline-block">
+                  {ch}
+                </span>
+              ))}
+            </span>
+          </h2>
         </div>
-        <h2 className="font-title flex gap-6 text-center text-[7rem] tracking-wide">
-          <div className="firstname">
-            {"Monica".split("").map((ch, i) => (
-              <span key={i} className="letter inline-block">
-                {ch}
-              </span>
-            ))}
-          </div>
-          <span className="lastname">
-            {"Bellucci".split("").map((ch, i) => (
-              <span key={i} className="letter inline-block">
-                {ch}
-              </span>
-            ))}
-          </span>
-        </h2>
-      </div>
 
-      {/* images */}
-      <div
-        ref={imgsContainerRef}
-        style={{ ...IMG_SIZE }}
-        className="relative w-full overflow-hidden text-center"
-      >
-        {INTRO_IMAGES.map((img, index) => (
-          <img
-            ref={imgRefs[index]}
-            key={index}
-            src={img}
-            alt="Monica Bellucci"
-            {...IMG_SIZE}
-            className="absolute inset-0 w-full opacity-0"
-          />
-        ))}
-      </div>
-    </main>
+        {/* images */}
+        <div
+          ref={imgsContainerRef}
+          style={{ ...IMG_SIZE }}
+          className="relative w-full overflow-hidden text-center"
+        >
+          {INTRO_IMAGES.map((img, index) => (
+            <img
+              ref={imgRefs[index]}
+              key={index}
+              src={img}
+              alt="Monica Bellucci"
+              {...IMG_SIZE}
+              className="absolute inset-0 w-full opacity-0"
+            />
+          ))}
+        </div>
+      </main>
+    </>
   );
 }
 
