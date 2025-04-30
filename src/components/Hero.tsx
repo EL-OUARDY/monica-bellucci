@@ -1,10 +1,10 @@
 import { useRef } from "react";
-import { motion } from "motion/react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { INTRO_IMAGES } from "../lib/images";
+import { CustomEase } from "gsap/CustomEase";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, CustomEase);
 
 const IMG_SIZE = {
   width: 324,
@@ -29,9 +29,22 @@ function Hero() {
 
     if (!imgsContainerRef.current || images.length === 0) return;
 
-    // Set images container initial position
+    // Create a custom ease
+    CustomEase.create("myEase", "0.25,1,0.5,1");
+
+    // Initialize animation properties
     gsap.set(imgsContainerRef.current, {
       y: -window.innerHeight / 2 + IMG_SIZE.height / 2,
+    });
+    gsap.set(".firstname .letter", {
+      y: 140,
+    });
+    gsap.set(".lastname .letter", {
+      y: 140,
+    });
+    gsap.set(".hero-info", {
+      opacity: 0,
+      y: 20,
     });
 
     let loadedCount = 0;
@@ -45,19 +58,28 @@ function Hero() {
         // Create a new GSAP timeline
         const tl = gsap.timeline({
           defaults: {
-            duration: 0.2,
-            ease: "power4.inOut",
+            duration: 0.15,
+            ease: "myEase",
           },
           onComplete: () => {
             tl.pause(); // pause the animation on complete.
+            console.log("Timeline duration: " + tl.duration());
           },
         });
 
         // Iterate over each image and create the animation
         images.forEach((img, index) => {
-          tl.to(img, { autoAlpha: 1 }); //fade in the image
+          tl.to(img, {
+            autoAlpha: 1,
+          }); //fade in the image
           if (index < images.length - 1) {
-            tl.to(img, { autoAlpha: 0 }); // fade out the image, if is not the last one
+            tl.to(img, {
+              autoAlpha: 0,
+              onComplete: () => {
+                // Remove the image from DOM after fade out
+                if (img) img.parentNode?.removeChild(img);
+              },
+            }); // Fade out the image, if is not the last one
           }
         });
 
@@ -65,17 +87,49 @@ function Hero() {
         tl.to(imgsContainerRef.current, {
           y: 0,
           width: "100%",
-          duration: 0.8,
-          delay: 0.2,
-          ease: "power2.inOut",
+          duration: 1.4,
+          delay: 0.4,
         }).to(
           images[images.length - 1],
           {
             y: -750,
-            duration: 0.8,
-            ease: "power2.inOut",
+            duration: 1.4,
           },
           "<",
+        );
+
+        // Animate Hero model name
+        // Animate first name letters, staggering from the end (reverse)
+        tl.to(
+          ".firstname .letter",
+          {
+            y: 0,
+            duration: 1,
+            stagger: { each: 0.04, from: "end" },
+          },
+          "-=1",
+        );
+
+        // Animate last name letters, normal stagger (from the start)
+        tl.to(
+          ".lastname .letter",
+          {
+            y: 0,
+            duration: 1,
+            stagger: { each: 0.04, from: "start" },
+          },
+          "<",
+        );
+
+        // Animate info hero text
+        tl.to(
+          ".hero-info",
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1.4,
+          },
+          "-=0.8",
         );
       }
     };
@@ -92,22 +146,36 @@ function Hero() {
   });
 
   return (
-    <main className="flex size-full flex-1 flex-col items-center justify-end gap-8">
+    <main className="flex size-full flex-1 flex-col items-center justify-end gap-4">
       {/* Titles */}
-      <div className="flex hidden w-fit flex-col px-8">
-        <motion.div className="text-muted-foreground mt-1 flex items-center justify-between py-4 text-lg">
-          <div className="hover:underline">Monica Bellucci</div>
+      <div className="hero-text flex w-fit flex-col overflow-hidden px-8">
+        <div className="hero-info text-muted-foreground -mb-4 flex items-center justify-between text-lg">
+          <div className="hover:underline">Model/Actress</div>
           <div className="hover:underline">
             <a
+              target="_blank"
               href="https://www.instagram.com/monicabellucciofficiel"
               className=""
             >
-              @monicabellucciofficiel
+              @MonicaBellucciOfficiel
             </a>
           </div>
-        </motion.div>
-        <h2 className="font-title text-center text-8xl tracking-wider">
-          Monica Bellucci
+        </div>
+        <h2 className="font-title flex gap-6 text-center text-[7rem] tracking-wide">
+          <div className="firstname">
+            {"Monica".split("").map((ch, i) => (
+              <span key={i} className="letter inline-block">
+                {ch}
+              </span>
+            ))}
+          </div>
+          <span className="lastname">
+            {"Bellucci".split("").map((ch, i) => (
+              <span key={i} className="letter inline-block">
+                {ch}
+              </span>
+            ))}
+          </span>
         </h2>
       </div>
 
