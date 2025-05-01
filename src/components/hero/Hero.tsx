@@ -5,6 +5,7 @@ import { CustomEase } from "gsap/CustomEase";
 import Header from "../Header";
 import { IMG_SIZE, INTRO_IMAGES } from "./constants";
 import { createHeroTimeline, initializeAnimations } from "./animations";
+import clsx from "clsx";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 
@@ -69,13 +70,13 @@ function Hero() {
       <main className="flex size-full flex-1 flex-col items-center justify-end gap-4">
         {/* Titles */}
         <div className="hero-text flex w-fit flex-col overflow-hidden px-8">
-          <div className="hero-info font-title text-muted-foreground -mb-2 flex items-center justify-between text-sm sm:-mb-4 sm:text-base">
+          <div className="hero-info font-title text-muted-foreground/70 -mb-2 flex items-center justify-between text-sm sm:-mb-4 sm:text-base">
             <div className="hover:underline">Model/Actress</div>
             <div className="hover:underline">
               <a
                 target="_blank"
                 href="https://www.instagram.com/monicabellucciofficiel"
-                className=""
+                className="cursor-pointer"
               >
                 @MonicaBellucciOfficiel
               </a>
@@ -112,7 +113,12 @@ function Hero() {
               src={img}
               alt="Monica Bellucci"
               {...IMG_SIZE}
-              className="absolute inset-0 w-full opacity-0"
+              className={clsx(
+                "absolute inset-0 w-full opacity-0",
+                index === INTRO_IMAGES.length - 1 && "main-img",
+              )}
+              onMouseOver={() => gsap.to(".main-img", { scale: 1.05 })}
+              onMouseLeave={() => gsap.to(".main-img", { scale: 1 })}
             />
           ))}
         </div>

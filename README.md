@@ -1,10 +1,10 @@
-# Monica Bellucci Portfolio
-
 ![Monica Bellucci Portfolio](./screenshot.png)
 
 ## Overview
 
-A stunning, animated hero section showcasing Monica Bellucci's portfolio. The project features sophisticated animations powered by GSAP timeline, creating an immersive and elegant viewing experience. The design emphasizes visual storytelling through smooth transitions and dynamic content presentation.
+A stunning, animated hero section showcasing a cinematic portfolio. The project features sophisticated animations powered by GSAP timeline, creating an immersive and elegant viewing experience. The design emphasizes visual storytelling through smooth transitions and dynamic content presentation.
+
+🌐 [View Demo](https://monica-bellucci.vercel.app/)
 
 ## Tech Stack
 

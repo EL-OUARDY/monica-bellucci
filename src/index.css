@@ -5,9 +5,9 @@
 :root {
   --background: #f0d8bb;
   --foreground: #1e1f13;
-  --primary: #f0d8bb;
+  --primary: #d6b288;
   --muted: #ebedee;
-  --muted-foreground: #374151;
+  --muted-foreground: #6b7280;
 }
 
 @theme inline {
