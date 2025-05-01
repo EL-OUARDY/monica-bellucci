@@ -2,6 +2,7 @@ import { MenuIcon } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CustomEase } from "gsap/CustomEase";
+import { useCustomCursor } from "../contexts/CursorContext";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 
@@ -10,6 +11,8 @@ interface Props {
 }
 
 function Header({ onLogoClick }: Props) {
+  const { setCustomCursorState } = useCustomCursor();
+
   useGSAP(() => {
     // Create a custom ease
     CustomEase.create("myEase", "0.25,1,0.5,1");
@@ -27,11 +30,17 @@ function Header({ onLogoClick }: Props) {
     <header className="flex w-full items-center justify-between px-8 pt-4 lg:w-5xl">
       <span
         onClick={() => onLogoClick()}
-        className="font-title cursor-pointer text-xl font-semibold"
+        onMouseOver={() => setCustomCursorState("transparent")}
+        onMouseLeave={() => setCustomCursorState("default")}
+        className="font-title text-xl font-semibold"
       >
         Monica Bellucci
       </span>
-      <MenuIcon className="size-5 cursor-pointer" />
+      <MenuIcon
+        onMouseOver={() => setCustomCursorState("transparent")}
+        onMouseLeave={() => setCustomCursorState("default")}
+        className="size-5"
+      />
     </header>
   );
 }

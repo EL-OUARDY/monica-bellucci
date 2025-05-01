@@ -41,4 +41,5 @@ src/
 - Component-based architecture
 - Smooth GSAP animations
 - Responsive design
+- Cursor animation
 - Optimized image loading with WebP format

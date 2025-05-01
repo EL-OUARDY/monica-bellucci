@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CustomEase } from "gsap/CustomEase";
@@ -6,13 +6,16 @@ import Header from "../Header";
 import { IMG_SIZE, INTRO_IMAGES } from "./constants";
 import { createHeroTimeline, initializeAnimations } from "./animations";
 import clsx from "clsx";
+import { useCustomCursor } from "../../contexts/CursorContext";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 
 function Hero() {
   const imgsContainerRef = useRef<HTMLDivElement>(null);
+  const { setCustomCursorState } = useCustomCursor();
 
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
 
   // Array of references for each image
   const imgRefs = Array(INTRO_IMAGES.length)
@@ -44,6 +47,14 @@ function Hero() {
           imgsContainerRef.current!,
           images as HTMLImageElement[],
         );
+
+        // Add onComplete callback to the timeline
+        timelineRef.current.eventCallback("onStart", () => {
+          setIsAnimationComplete(false);
+        });
+        timelineRef.current.eventCallback("onComplete", () => {
+          setIsAnimationComplete(true);
+        });
       }
     };
 
@@ -67,22 +78,31 @@ function Hero() {
           }
         }}
       />
+      {/* Hero content */}
       <main className="flex size-full flex-1 flex-col items-center justify-end gap-4">
         {/* Titles */}
         <div className="hero-text flex w-fit flex-col overflow-hidden px-8">
-          <div className="hero-info font-title text-muted-foreground/70 -mb-2 flex items-center justify-between text-sm sm:-mb-4 sm:text-base">
+          <div className="hero-info text-foreground/80 font-title -mb-2 flex items-center justify-between text-sm sm:-mb-4 sm:px-8 sm:text-base md:px-10 lg:px-12">
             <div className="hover:underline">Model/Actress</div>
             <div className="hover:underline">
               <a
                 target="_blank"
                 href="https://www.instagram.com/monicabellucciofficiel"
-                className="cursor-pointer"
+                className="cursor-none"
               >
                 @MonicaBellucciOfficiel
               </a>
             </div>
           </div>
-          <h2 className="font-title flex gap-6 text-center text-[2.8rem] tracking-wide sm:text-[5rem] md:text-[6rem] lg:text-[7rem]">
+          <h2
+            onMouseOver={() =>
+              isAnimationComplete && setCustomCursorState("blend")
+            }
+            onMouseLeave={() =>
+              isAnimationComplete && setCustomCursorState("default")
+            }
+            className="model-name font-title flex gap-6 text-center text-[2.8rem] tracking-wide sm:px-8 sm:text-[5rem] md:px-10 md:text-[6rem] lg:px-12 lg:text-[7rem]"
+          >
             <div className="firstname">
               {"Monica".split("").map((ch, i) => (
                 <span key={i} className="letter inline-block">
